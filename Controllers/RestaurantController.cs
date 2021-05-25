@@ -1,6 +1,7 @@
 ﻿using ResturantRaterAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -14,6 +15,7 @@ namespace ResturantRaterAPI.Controllers
 
     {
         private RestaurantDbContext _context = new RestaurantDbContext();
+        [HttpPost]
         public async Task<IHttpActionResult> PostRestaurant(Restaurant model)
         {
             if (model == null)
@@ -28,6 +30,24 @@ namespace ResturantRaterAPI.Controllers
                 return Ok();
             }
             return BadRequest(ModelState);
+        }
+
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAll()
+        {
+            List<Restaurant> restaurants = await _context.Restaurants.ToListAsync();
+            return Ok(restaurants);
+        }
+        [HttpGet]
+        public async Task<IHttpActionResult> GetById(int Id)
+        {
+            Restaurant restaurant = await _context.Restaurants.FindAsync(Id);
+            if (restaurant != null)
+            {
+                return Ok(restaurant);
+            }
+            return NotFound();
+
         }
     }
 }
